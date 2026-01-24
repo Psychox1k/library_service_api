@@ -22,8 +22,8 @@ from library_service_api import settings
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("books.urls", namespace="books")),
-    path("api/", include("users.urls", namespace="users")),
+    path("api/books/", include("books.urls", namespace="books")),
+    path("api/users/", include("users.urls", namespace="users")),
 ]
 
 
