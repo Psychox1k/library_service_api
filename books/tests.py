@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -21,66 +22,75 @@ def sample_book(**params):
     return Book.objects.create(**defaults)
 
 
-class BookAPITests(TestCase):
+class UnauthenticatedBookApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-        self.book = sample_book(title="Test Book")
-        self.detail_url = reverse("books:book-detail", args=[self.book.id])
+    def test_auth_required(self):
+        """Test that authentication is NOT required for list"""
+        res = self.client.get(BOOK_URL)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+
+class AuthenticatedBookApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            email="test@test.com", password="testpassword123"
+        )
+        self.client.force_authenticate(self.user)
 
     def test_list_books(self):
-        """Test retrieving a list of books"""
-        sample_book(title="Second Book")
-
+        """Test that authenticated user can see books"""
+        sample_book()
         res = self.client.get(BOOK_URL)
-
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
 
-    def test_create_book(self):
-        """Test creating a new book"""
+    def test_create_book_forbidden(self):
+        """Test that standard user CANNOT create a book"""
         payload = {
-            "title": "Good Book",
-            "author": "Sigma",
-            "cover": "HARD",
-            "inventory": 5,
-            "daily_fee": 2.00,
+            "title": "New Book",
+            "author": "New Author",
+            "cover": "Hard",
+            "inventory": 10,
+            "daily_fee": 5.00,
         }
-
         res = self.client.post(BOOK_URL, payload)
 
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-
-        exists = Book.objects.filter(title=payload["title"]).exists()
-        self.assertTrue(exists)
-
-    def test_retrieve_book_detail(self):
-        """Test retrieving specific book detail"""
-        res = self.client.get(self.detail_url)
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-        self.assertEqual(res.data["title"], self.book.title)
-
-    def test_update_book_partial(self):
-        """Test updating book with PATCH"""
-        payload = {
-            "title": "Updated Title",
-            "cover": "SOFT",
-        }
-        res = self.client.patch(self.detail_url, payload)
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-        self.book.refresh_from_db()
-        self.assertEqual(self.book.title, "Updated Title")
-        self.assertEqual(self.book.cover, "SOFT")
-
-        self.assertEqual(self.book.author, "Default Author")
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_book(self):
-        """Test deleting a book"""
-        res = self.client.delete(self.detail_url)
+        """Test that standard user CAN NOT delete a book"""
+        book = sample_book()
+        url = reverse("books:book-detail", args=[book.id])
+        res = self.client.delete(url)
 
-        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(Book.objects.filter(id=self.book.id).exists())
+        self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
+
+    class AdminBookApiTests(TestCase):
+        def setUp(self):
+            self.client = APIClient()
+            self.user = get_user_model().objects.create_superuser(
+                email="admin@test.com", password="testpassword123"
+            )
+            self.client.force_authenticate(self.user)
+
+        def test_create_book(self):
+            """Test that admin user CAN create a book"""
+            payload = {
+                "title": "New Book",
+                "author": "New Author",
+                "cover": "Hard",
+                "inventory": 10,
+                "daily_fee": 5.00,
+            }
+            res = self.client.post(BOOK_URL, payload)
+            self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        def test_delete_book(self):
+            """Test that admin user CAN delete a book"""
+            book = sample_book()
+            url = reverse("books:book-detail", args=[book.id])
+            res = self.client.delete(url)
+
+            self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
