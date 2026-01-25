@@ -87,6 +87,35 @@ class AuthenticatedBorrowingApiTests(TestCase):
         self.assertEqual(payload["expected_return_date"], borrowing.expected_return_date)
         self.assertEqual(borrowing.user, self.user)
 
+    def test_borrowing_decreases_inventory(self):
+
+        book = sample_book(inventory=6)
+
+        payload = {
+            "book": book.id,
+            "expected_return_date": (timezone.now() + datetime.timedelta(days=7)).date()
+        }
+
+        res = self.client.post(BORROWING_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+        book.refresh_from_db()
+
+        self.assertEqual(book.inventory, 5)
+
+    def test_borrowing_failed_if_inventory_zero(self):
+
+        book = sample_book(inventory=0)
+
+        payload = {
+            "book": book.id,
+            "expected_return_date": (timezone.now() + datetime.timedelta(days=7)).date()
+        }
+
+        res = self.client.post(BORROWING_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("book", res.data)
+
     def test_borrowing_date_constraint(self):
         """Test that expected_return_date cannot be earlier than borrow_date"""
         with self.assertRaises(IntegrityError):
@@ -95,4 +124,3 @@ class AuthenticatedBorrowingApiTests(TestCase):
                 book=self.book,
                 expected_return_date=timezone.now().date() - datetime.timedelta(days=1)
             )
-
