@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from books.serializers import BookSerializer
@@ -18,10 +19,20 @@ class BorrowingSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         data = super().validate(attrs)
+        book = data["book"]
 
+        if book.inventory <= 0:
+            raise serializers.ValidationError({
+                "book": "Inventory is empty for this book"
+            })
         return data
 
     def create(self, validated_data):
+        with transaction.atomic():
+            book = validated_data["book"]
+            book.inventory -= 1
+            book.save()
+
         return super().create(validated_data)
 
 
