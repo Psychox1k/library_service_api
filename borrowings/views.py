@@ -6,6 +6,7 @@ from borrowings.serializers import (
     BorrowingSerializer,
     BorrowingListSerializer,
 )
+from borrowings.telegram_utils import send_telegram_message
 
 
 class BorrowingViewSet(viewsets.ModelViewSet):
@@ -48,4 +49,14 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 
         Automatically assigns the currently authenticated user to the borrowing instance.
         """
-        serializer.save(user=self.request.user)
+        borrowing = serializer.save(user=self.request.user)
+
+        message = (
+            f"📚 <b>New Borrowing Created!</b>\n\n"
+            f"👤 <b>User:</b> {borrowing.user.email}\n"
+            f"📖 <b>Book:</b> {borrowing.book.title}\n"
+            f"📅 <b>Expected Return:</b> {borrowing.expected_return_date}\n"
+            f"🆔 <b>Borrowing ID:</b> {borrowing.id}"
+        )
+
+        send_telegram_message(message)
