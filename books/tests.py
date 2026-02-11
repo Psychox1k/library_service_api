@@ -67,30 +67,31 @@ class AuthenticatedBookApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
-    class AdminBookApiTests(TestCase):
-        def setUp(self):
-            self.client = APIClient()
-            self.user = get_user_model().objects.create_superuser(
-                email="admin@test.com", password="testpassword123"
-            )
-            self.client.force_authenticate(self.user)
 
-        def test_create_book(self):
-            """Test that admin user CAN create a book"""
-            payload = {
-                "title": "New Book",
-                "author": "New Author",
-                "cover": "Hard",
-                "inventory": 10,
-                "daily_fee": 5.00,
-            }
-            res = self.client.post(BOOK_URL, payload)
-            self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+class AdminBookApiTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_superuser(
+            email="admin@test.com", password="testpassword123"
+        )
+        self.client.force_authenticate(self.user)
 
-        def test_delete_book(self):
-            """Test that admin user CAN delete a book"""
-            book = sample_book()
-            url = reverse("books:book-detail", args=[book.id])
-            res = self.client.delete(url)
+    def test_create_book(self):
+        """Test that admin user CAN create a book"""
+        payload = {
+            "title": "New Book",
+            "author": "New Author",
+            "cover": "HARD",
+            "inventory": 10,
+            "daily_fee": 5.00,
+        }
+        res = self.client.post(BOOK_URL, payload)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
-            self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+    def test_delete_book(self):
+        """Test that admin user CAN delete a book"""
+        book = sample_book()
+        url = reverse("books:book-detail", args=[book.id])
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
