@@ -134,7 +134,9 @@ STATIC_URL = "static/"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-    )
+    ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 20,
 }
 
 SIMPLE_JWT = {
@@ -154,8 +156,8 @@ CELERY_TIMEZONE = "UTC"
 
 
 CELERY_BEAT_SCHEDULE = {
-    'check-overdue-every-day': {
-        'task': 'borrowings.tasks.check_overdue_borrowings',
-        'schedule': crontab(hour=8, minute=0),
+    "check-overdue-every-day": {
+        "task": "borrowings.tasks.check_overdue_borrowings",
+        "schedule": crontab(hour=8, minute=0),
     },
 }
