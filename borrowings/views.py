@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from borrowings.models import Borrowing
 from borrowings.serializers import (
     BorrowingSerializer,
-    BorrowingListSerializer,
+    BorrowingListSerializer, BorrowingDetailSerializer,
 )
 from borrowings.telegram_utils import send_telegram_message
 
@@ -39,8 +39,10 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         - 'list' and 'retrieve': Returns BorrowingListSerializer (includes detailed book info).
         - Other actions: Returns the standard BorrowingSerializer.
         """
-        if self.action in ("list", "retrieve"):
+        if self.action == "list":
             return BorrowingListSerializer
+        elif self.action == "retrieve":
+            return BorrowingDetailSerializer
         return BorrowingSerializer
 
     def perform_create(self, serializer):

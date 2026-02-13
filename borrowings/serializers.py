@@ -3,6 +3,8 @@ from rest_framework import serializers
 
 from books.serializers import BookSerializer
 from borrowings.models import Borrowing
+from payments.serializer import PaymentSerializer
+from payments.utils import create_payment_session
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
@@ -33,7 +35,10 @@ class BorrowingSerializer(serializers.ModelSerializer):
             book.inventory -= 1
             book.save()
 
-        return super().create(validated_data)
+            borrowing = super().create(validated_data)
+            create_payment_session(borrowing)
+
+        return borrowing
 
 
 class BorrowingListSerializer(BorrowingSerializer):
@@ -50,4 +55,17 @@ class BorrowingListSerializer(BorrowingSerializer):
             "actual_return_date",
             "book",
             "user",
+        )
+
+
+class BorrowingDetailSerializer(serializers.ModelSerializer):
+    payments = PaymentSerializer(many=True, read_only=True)
+    book = serializers.CharField(source="book.title", read_only=True)
+    class Meta:
+        model = Borrowing
+        fields = (
+            "id",
+            "book",
+            "borrow_date",
+            "payments"
         )
