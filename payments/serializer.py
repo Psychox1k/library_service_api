@@ -22,7 +22,7 @@ class PaymentDetailSerializer(PaymentSerializer):
 
     class Meta:
         model = Payment
-        fiedls = (
+        fields = (
             "id", "status", "type", "borrowing",
             "session_url", "session_id", "money_to_pay",
             "book_title", "user_email"
