@@ -14,10 +14,8 @@ def send_telegram_message(text):
     token = os.environ.get("TELEGRAM_BOT_TOKEN")
     chat_id = os.environ.get("TELEGRAM_CHAT_ID")
 
-
     if not token or not chat_id:
         print("Telegram token or chat_id is missing.")
-
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
 

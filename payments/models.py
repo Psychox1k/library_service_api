@@ -8,6 +8,7 @@ class Payment(models.Model):
     class StatusType(models.TextChoices):
         PENDING = "PENDING", "Pending"
         PAID = "PAID", "Paid"
+
     class Type(models.TextChoices):
         PAYMENT = "PAYMENT", "Payment"
         FINE = "FINE", "Fine"
