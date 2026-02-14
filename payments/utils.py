@@ -1,8 +1,9 @@
-import stripe
-from django.conf import settings
+import os
 
-from rest_framework.exceptions import ValidationError
+import stripe
 from .models import Payment
+
+stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 
 
 def create_payment_session(borrowing):
@@ -52,4 +53,6 @@ def create_payment_session(borrowing):
     except Exception as e:
 
         print(f"Error: {e}")
+
+        raise e
 
