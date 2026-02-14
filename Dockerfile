@@ -8,13 +8,16 @@ COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
+
+RUN adduser --disabled-password --no-create-home django-user
+
 COPY . .
 
+RUN chown -R django-user:django-user /app
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-RUN adduser --disabled-password --no-create-home django-user
 USER django-user
 
 
