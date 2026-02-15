@@ -171,4 +171,8 @@ CELERY_BEAT_SCHEDULE = {
         "task": "borrowings.tasks.check_overdue_borrowings",
         "schedule": crontab(hour=8, minute=0),
     },
+    "check-expired-session-every-minute": {
+        "task": "payments.tasks.check_pending_payments",
+        "schedule": crontab()
+    }
 }
