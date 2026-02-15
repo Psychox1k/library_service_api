@@ -3,6 +3,7 @@ from django.utils import timezone
 from borrowings.models import Borrowing
 from borrowings.telegram_utils import send_telegram_message
 
+
 @shared_task
 def check_overdue_borrowings():
     today = timezone.now().date()
@@ -11,7 +12,7 @@ def check_overdue_borrowings():
         expected_return_date__lte=today,
         actual_return_date__isnull=True
     )
-    if overdue_borrowings.exists():
+    if not overdue_borrowings.exists():
         send_telegram_message("✅ No borrowings overdue today!")
     else:
         for borrowing in overdue_borrowings:
