@@ -31,7 +31,7 @@ def sample_payment(user, **params):
         "type": "PAYMENT",
         "borrowing": borrowing,
         "money_to_pay": Decimal("10.50"),
-        "session_url": "http://stripe.com/pay",
+        "session_url": "https://stripe.com/pay",
         "session_id": f"sess_{user.id}_12345"
     }
     defaults.update(params)
@@ -86,7 +86,10 @@ class AuthenticatedPaymentApiTests(TestCase):
         # Try to UPDATE (PUT)
         payload = {"status": "PAID"}
         res_put = self.client.put(url, payload)
-        self.assertEqual(res_put.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(
+            res_put.status_code,
+            status.HTTP_405_METHOD_NOT_ALLOWED
+        )
 
 
 class AdminPaymentApiTests(TestCase):

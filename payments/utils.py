@@ -1,7 +1,6 @@
 import os
 
 import stripe
-from .models import Payment
 
 stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
 

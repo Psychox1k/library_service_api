@@ -24,4 +24,3 @@ def check_overdue_borrowings():
                 f"🆔 <b>ID:</b> {borrowing.id}"
             )
             send_telegram_message(text)
-

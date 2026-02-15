@@ -39,7 +39,8 @@ class BorrowingSerializer(serializers.ModelSerializer):
 
             if has_pending_payments:
                 raise serializers.ValidationError(
-                    "You have pending payments! Pay them first before borrowing new books"
+                    "You have pending payments!"
+                    " Pay them first before borrowing new books"
                 )
 
         return data

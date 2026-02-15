@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from rest_framework import serializers, viewsets
+from rest_framework import viewsets
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from books.models import Book

@@ -13,7 +13,8 @@ class BorrowingViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing borrowing of books.
 
-    Handles Create, Read, Update, and Delete operations for Borrowing model.
+    Handles Create, Read, Update, and Delete operations
+    for Borrowing model.
     """
     queryset = Borrowing.objects.all()
     serializer_class = BorrowingSerializer
@@ -36,7 +37,8 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         """
         Return the serializer class based on the action.
 
-        - 'list' and 'retrieve': Returns BorrowingListSerializer (includes detailed book info).
+        - 'list' and 'retrieve': Returns BorrowingListSerializer
+         (includes detailed book info).
         - Other actions: Returns the standard BorrowingSerializer.
         """
         if self.action == "list":
@@ -49,7 +51,8 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         """
         Create a new borrowing.
 
-        Automatically assigns the currently authenticated user to the borrowing instance.
+        Automatically assigns the currently authenticated
+        user to the borrowing instance.
         """
         borrowing = serializer.save(user=self.request.user)
 

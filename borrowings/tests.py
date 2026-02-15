@@ -84,7 +84,10 @@ class AuthenticatedBorrowingApiTests(TestCase):
         borrowing = Borrowing.objects.get(id=res.data["id"])
 
         self.assertEqual(payload["book"], borrowing.book.id)
-        self.assertEqual(payload["expected_return_date"], borrowing.expected_return_date)
+        self.assertEqual(
+            payload["expected_return_date"],
+            borrowing.expected_return_date
+        )
         self.assertEqual(borrowing.user, self.user)
 
     def test_borrowing_decreases_inventory(self):
@@ -109,7 +112,9 @@ class AuthenticatedBorrowingApiTests(TestCase):
 
         payload = {
             "book": book.id,
-            "expected_return_date": (timezone.now() + datetime.timedelta(days=7)).date()
+            "expected_return_date": (
+                    timezone.now() + datetime.timedelta(days=7)
+            ).date()
         }
 
         res = self.client.post(BORROWING_URL, payload)
