@@ -4,7 +4,7 @@ from rest_framework import serializers
 from books.serializers import BookSerializer
 from borrowings.models import Borrowing
 from payments.serializer import PaymentSerializer
-from payments.utils import create_payment_session
+from payments.utils import create_stripe_session
 from payments.models import Payment
 
 
@@ -51,7 +51,15 @@ class BorrowingSerializer(serializers.ModelSerializer):
             book.save()
 
             borrowing = super().create(validated_data)
-            create_payment_session(borrowing)
+            session = create_stripe_session(borrowing)
+            Payment.objects.create(
+                status="PENDING",
+                type="PAYMENT",
+                borrowing=borrowing,
+                session_url=session.url,
+                session_id=session.id,
+                money_to_pay=session.amount_total / 100
+            )
 
         return borrowing
 
@@ -76,6 +84,7 @@ class BorrowingListSerializer(BorrowingSerializer):
 class BorrowingDetailSerializer(serializers.ModelSerializer):
     payments = PaymentSerializer(many=True, read_only=True)
     book = serializers.CharField(source="book.title", read_only=True)
+
     class Meta:
         model = Borrowing
         fields = (
