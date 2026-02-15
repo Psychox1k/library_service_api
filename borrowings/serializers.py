@@ -5,6 +5,7 @@ from books.serializers import BookSerializer
 from borrowings.models import Borrowing
 from payments.serializer import PaymentSerializer
 from payments.utils import create_payment_session
+from payments.models import Payment
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
@@ -27,6 +28,20 @@ class BorrowingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 "book": "Inventory is empty for this book"
             })
+
+        requests = self.context.get("request")
+
+        if requests and requests.user.is_authenticated:
+            has_pending_payments = Payment.objects.filter(
+                borrowing__user=requests.user,
+                status="PENDING"
+            ).exists()
+
+            if has_pending_payments:
+                raise serializers.ValidationError(
+                    "You have pending payments! Pay them first before borrowing new books"
+                )
+
         return data
 
     def create(self, validated_data):
