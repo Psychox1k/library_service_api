@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
+
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
     "users",
     "borrowings",
     "payments",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -148,6 +150,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 20,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
@@ -173,6 +176,15 @@ CELERY_BEAT_SCHEDULE = {
     },
     "check-expired-session-every-minute": {
         "task": "payments.tasks.check_pending_payments",
-        "schedule": crontab()
-    }
+        "schedule": crontab(),
+    },
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Library Service API",
+    "DESCRIPTION": "API for managing books, borrowings and payments",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True
+    # OTHER SETTINGS
 }
