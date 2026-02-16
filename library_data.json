@@ -1,0 +1,101 @@
+[
+{
+  "model": "books.book",
+  "pk": 4,
+  "fields": {
+    "title": "Incel",
+    "author": "Stephan Krakowski",
+    "cover": "HARD",
+    "inventory": 3,
+    "daily_fee": "30.00"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 5,
+  "fields": {
+    "title": "Romeo&Juliet",
+    "author": "William Shekspeare",
+    "cover": "HARD",
+    "inventory": 3,
+    "daily_fee": "15.00"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 6,
+  "fields": {
+    "title": "American Psycho",
+    "author": "Bret Easton Ellis",
+    "cover": "HARD",
+    "inventory": 50,
+    "daily_fee": "15.00"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 7,
+  "fields": {
+    "title": "The Adventures of Tom Sawyer",
+    "author": "Mark Twain",
+    "cover": "SOFT",
+    "inventory": 45,
+    "daily_fee": "20.00"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 8,
+  "fields": {
+    "title": "Civilization and Its Discontents",
+    "author": "Sigmund Freud",
+    "cover": "HARD",
+    "inventory": 40,
+    "daily_fee": "22.00"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 9,
+  "fields": {
+    "title": "The Long Walk",
+    "author": "Stephen King",
+    "cover": "SOFT",
+    "inventory": 23,
+    "daily_fee": "14.00"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 10,
+  "fields": {
+    "title": "Crime and Punishment",
+    "author": "Fyodor Dostoevsky",
+    "cover": "HARD",
+    "inventory": 35,
+    "daily_fee": "30.00"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 11,
+  "fields": {
+    "title": "The Da Vinci Code",
+    "author": "Dan Brown",
+    "cover": "SOFT",
+    "inventory": 24,
+    "daily_fee": "14.00"
+  }
+},
+{
+  "model": "books.book",
+  "pk": 12,
+  "fields": {
+    "title": "Lolita",
+    "author": "Vladimir Nabokov",
+    "cover": "SOFT",
+    "inventory": 45,
+    "daily_fee": "24.00"
+  }
+}
+]
